@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Kartın ümumi dizaynı */
+        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
+
+        /* Kartın dizaynı */
         .card {
-            width: 180px; /* Ehtiyaca görə dəyişə bilərsən */
+            width: 180px;
             background: #fff;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -15,43 +17,17 @@
             flex-direction: column;
             cursor: pointer;
             transition: transform 0.2s;
-            font-family: sans-serif;
-            margin: 10px;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* ŞƏKİL HİSSƏSİ - Problemin həlli buradadır */
+        .card:hover { transform: translateY(-5px); }
         .card img {
             width: 100%;
-            height: 220px; /* Sabit hündürlük */
-            object-fit: contain; /* Şəkli kəsmədən, tam sığdırır */
-            background-color: #f8f9fa; /* Şəkil tam sığanda boş qalan yerlərin rəngi */
-            display: block;
+            height: 220px;
+            object-fit: contain;
+            background-color: #f8f9fa;
         }
-
-        /* İnformasiya hissəsi */
-        .info {
-            padding: 10px;
-            text-align: center;
-            flex-grow: 1; /* Yazı az olsa belə düyməni aşağıda saxlayır */
-        }
-
-        .author {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .name {
-            font-size: 13px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        /* Düymə hissəsi */
+        .info { padding: 10px; text-align: center; flex-grow: 1; }
+        .author { font-size: 14px; font-weight: bold; color: #333; }
+        .name { font-size: 13px; color: #666; margin-top: 5px; }
         .card-btn {
             background-color: #f1f1f1;
             color: #28a745;
@@ -60,27 +36,97 @@
             font-size: 12px;
             font-weight: bold;
             text-transform: uppercase;
-            border-top: 1px solid #eee;
+        }
+
+        /* MODAL (Ətraflı Pəncərəsi) */
+        .modal {
+            display: none; /* Başlanğıcda gizli */
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            right: 15px; top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+        .modal img { width: 150px; height: auto; border-radius: 8px; margin-bottom: 15px; }
+        .modal h2 { margin: 10px 0; color: #333; }
+        .modal p { color: #666; line-height: 1.5; font-size: 14px; }
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-<div class="card" onclick="openBook('Əli Məhərrəmov', 'Qəlb Yarası', 'https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', 'pdf_linki.pdf', 'Dram', 'Az', 'Açıqlama mətni...')">
+<div class="card" onclick="openBook('Əli Məhərrəmov', 'Qəlb Yarası', 'https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', '#', 'Dram', 'Azərbaycan', 'Bu kitab insanın daxili aləmindəki ağrılar və həyatın çətinlikləri haqqındadır.')">
     <img src="https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg" alt="Kitab">
-    
     <div class="info">
         <div class="author">Əli Məhərrəmov</div>
         <div class="name">"Qəlb Yarası"</div>
     </div>
-    
     <div class="card-btn">ƏTRAFLI BAX</div>
+</div>
+
+<div id="bookModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img id="modalImg" src="" alt="">
+        <h2 id="modalTitle"></h2>
+        <h4 id="modalAuthor" style="color: #28a745;"></h4>
+        <p><strong>Janr:</strong> <span id="modalGenre"></span> | <strong>Dil:</strong> <span id="modalLang"></span></p>
+        <p id="modalDesc"></p>
+        <a id="modalPdf" href="#" class="download-btn" target="_blank">PDF Oxu / Yüklə</a>
+    </div>
 </div>
 
 <script>
     function openBook(author, name, img, pdf, genre, lang, desc) {
-        console.log("Kitab açılır:", name);
-        // Bura klikləndikdə baş verəcək funksiyanı yaza bilərsən
+        // Modal elementlərini doldururuq
+        document.getElementById('modalImg').src = img;
+        document.getElementById('modalTitle').innerText = name;
+        document.getElementById('modalAuthor').innerText = author;
+        document.getElementById('modalGenre').innerText = genre;
+        document.getElementById('modalLang').innerText = lang;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('modalPdf').href = pdf;
+
+        // Modalı göstəririk
+        document.getElementById('bookModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('bookModal').style.display = 'none';
+    }
+
+    // Modalın kənarına vuranda bağlansın
+    window.onclick = function(event) {
+        let modal = document.getElementById('bookModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
 </script>
 
