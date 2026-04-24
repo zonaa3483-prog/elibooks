@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitab Portalı</title>
+    <title>Mir.az Klon - Kitab Portalı</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -11,7 +11,7 @@
             --card: #ffffff;
             --text: #333;
             --green: #28a745;
-            --modal-overlay: rgba(0,0,0,0.7);
+            --modal-overlay: rgba(0,0,0,0.85);
         }
 
         body.dark-mode {
@@ -23,51 +23,69 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             transition: 0.3s;
-            overflow-x: hidden;
         }
 
-        /* Kitab Şəbəkəsi */
+        /* Ana Səhifə Grid Sistemi */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 12px;
+            gap: 15px;
+            padding: 15px;
         }
 
         .card {
             background: var(--card);
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .card img {
             width: 100%;
-            height: 180px;
+            height: 190px;
             object-fit: cover;
-            padding: 8px;
+            padding: 10px;
             box-sizing: border-box;
-            border-radius: 18px;
+            border-radius: 22px;
         }
 
         .info {
-            padding: 8px;
+            padding: 5px 10px 15px;
             text-align: center;
+            flex-grow: 1;
         }
 
-        .author { font-weight: bold; font-size: 13px; margin-bottom: 3px; }
-        .name { font-size: 11px; opacity: 0.8; }
+        .author { font-weight: bold; font-size: 14px; }
+        .name { font-size: 12px; opacity: 0.7; margin-top: 4px; }
 
-        /* MODAL (Ətraflı Bölməsi) */
+        /* Ana səhifədəki "ƏTRAFLI" düyməsi */
+        .card-btn {
+            background: #f8f9fa;
+            color: var(--green);
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 12px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        body.dark-mode .card-btn {
+            background: #2c394a;
+            color: #8ed081;
+        }
+
+        /* MODAL (Detallı Məlumat Pəncərəsi) */
         .modal {
-            display: none; /* İlkin olaraq gizli */
+            display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -75,23 +93,30 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
         }
 
         .modal-content {
             background: var(--card);
             width: 90%;
-            max-width: 380px;
-            border-radius: 25px;
-            padding: 20px;
+            max-width: 400px;
+            border-radius: 30px;
+            padding: 25px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .close-btn {
             position: absolute;
             top: 15px; right: 20px;
-            font-size: 28px;
+            font-size: 30px;
             cursor: pointer;
             color: var(--text);
         }
@@ -102,49 +127,63 @@
             object-fit: cover;
             display: block;
             margin: 0 auto 15px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
-        .detail-table {
-            margin-top: 15px;
+        .modal-title {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
-        .row {
+        .description {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.8;
+            border-top: 1px solid rgba(128,128,128,0.2);
+            padding-top: 15px;
+        }
+
+        .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(128,128,128,0.2);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
-        .row:last-child { border-bottom: none; }
-
         .label { color: #888; font-size: 14px; }
-        .val { font-weight: bold; color: var(--green); font-size: 14px; }
+        .val { font-weight: bold; color: var(--green); }
 
-        .dl-btn {
-            display: block;
+        /* Ən sondakı YÜKLƏ düyməsi */
+        .final-dl-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             background: var(--green);
             color: white;
             text-align: center;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 12px;
+            padding: 16px;
+            margin-top: 25px;
+            border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
 
-        /* Gecə rejimi düyməsi */
         .theme-btn {
             position: fixed;
             bottom: 20px; right: 20px;
             background: #333; color: white;
-            width: 50px; height: 50px;
+            width: 55px; height: 55px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -152,47 +191,51 @@
 
 <div class="grid">
     
-    <div class="card" onclick="showBook('Əli Məhərrəmov', 'Sənsizlik', '1.jpg', '1.pdf', 'Sevgi', 'Azərbaycan')">
+    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Sənsizlik', '1.jpg', '1.pdf', 'Sevgi', 'Azərbaycan', 'Bu əsər müəllifin ən çox oxunan kitablarından biridir. Sənsizlik mövzusu ətrafında qurulan hekayə oxucunu dərin düşüncələrə sövq edir.')">
         <img src="1.jpg" alt="Kitab">
         <div class="info">
             <div class="author">Əli Məhərrəmov</div>
-            <div class="name">"Sənsizlik" PDF</div>
+            <div class="name">"Sənsizlik"</div>
         </div>
+        <div class="card-btn">ƏTRAFLI BAX</div>
     </div>
 
-    <div class="card" onclick="showBook('Əli Məhərrəmov', 'Dedektiv Con', '2.jpg', '2.pdf', 'Dedektiv', 'Azərbaycan')">
+    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Dedektiv Con', '2.jpg', '2.pdf', 'Dedektiv', 'Azərbaycan', 'Gərgin süjet xətti və gözlənilməz sonluq. Dedektiv Conun növbəti sirli hadisəsi sizi heyran qoyacaq.')">
         <img src="2.jpg" alt="Kitab">
         <div class="info">
             <div class="author">Əli Məhərrəmov</div>
-            <div class="name">"Dedektiv Con" PDF</div>
+            <div class="name">"Dedektiv Con"</div>
         </div>
+        <div class="card-btn">ƏTRAFLI BAX</div>
     </div>
 
 </div>
 
-<div id="myModal" class="modal">
+<div id="bookModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeBook()">&times;</span>
         
-        <img id="bookImg" src="" class="modal-img">
-        <h3 id="bookTitle" style="text-align:center; margin: 10px 0;"></h3>
+        <img id="m-img" src="" class="modal-img">
+        <h3 id="m-title" class="modal-title"></h3>
 
-        <div class="detail-table">
-            <div class="row">
-                <span class="label">Müəllif:</span>
-                <span id="bookAuthor" class="val"></span>
-            </div>
-            <div class="row">
-                <span class="label">Janr:</span>
-                <span id="bookGenre" class="val"></span>
-            </div>
-            <div class="row">
-                <span class="label">Dil:</span>
-                <span id="bookLang" class="val"></span>
-            </div>
+        <div id="m-desc" class="description"></div>
+
+        <div class="detail-row">
+            <span class="label"><i class="fas fa-pen"></i> Müəllif:</span>
+            <span id="m-author" class="val"></span>
+        </div>
+        <div class="detail-row">
+            <span class="label"><i class="fas fa-bookmark"></i> Janr:</span>
+            <span id="m-genre" class="val"></span>
+        </div>
+        <div class="detail-row">
+            <span class="label"><i class="fas fa-language"></i> Dil:</span>
+            <span id="m-lang" class="val"></span>
         </div>
 
-        <a id="bookLink" href="#" download class="dl-btn">Endirmək üçün vurun</a>
+        <a id="m-link" href="#" download class="final-dl-btn">
+            <i class="fas fa-cloud-download-alt"></i> PDF YÜKLƏ
+        </a>
     </div>
 </div>
 
@@ -201,32 +244,26 @@
 </div>
 
 <script>
-    // Kitabı açmaq funksiyası
-    function showBook(author, title, img, pdf, genre, lang) {
-        document.getElementById('bookTitle').innerText = title;
-        document.getElementById('bookAuthor').innerText = author;
-        document.getElementById('bookGenre').innerText = genre;
-        document.getElementById('bookLang').innerText = lang;
-        document.getElementById('bookImg').src = img;
-        document.getElementById('bookLink').href = pdf;
+    function openBook(author, title, img, pdf, genre, lang, desc) {
+        document.getElementById('m-title').innerText = title;
+        document.getElementById('m-author').innerText = author;
+        document.getElementById('m-genre').innerText = genre;
+        document.getElementById('m-lang').innerText = lang;
+        document.getElementById('m-desc').innerText = desc;
+        document.getElementById('m-img').src = img;
+        document.getElementById('m-link').href = pdf;
         
-        // Modal pəncərəni göstər
-        document.getElementById('myModal').style.display = 'flex';
-        
-        // Səhifənin arxada sürüşməsini dayandır
+        document.getElementById('bookModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    // Kitabı bağlamaq funksiyası
     function closeBook() {
-        document.getElementById('myModal').style.display = 'none';
+        document.getElementById('bookModal').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
-    // Kənara basanda bağlansın
     window.onclick = function(event) {
-        let modal = document.getElementById('myModal');
-        if (event.target == modal) {
+        if (event.target == document.getElementById('bookModal')) {
             closeBook();
         }
     }
