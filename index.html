@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mir.az Klon - Kitab Portalı</title>
+    <title>Kitab Portalı</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -23,7 +23,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             transition: 0.3s;
         }
@@ -65,25 +65,20 @@
         .author { font-weight: bold; font-size: 14px; }
         .name { font-size: 12px; opacity: 0.7; margin-top: 4px; }
 
-        /* Ana səhifədəki "ƏTRAFLI" düyməsi */
         .card-btn {
             background: #f8f9fa;
             color: var(--green);
             text-align: center;
             padding: 12px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             border-top: 1px solid rgba(0,0,0,0.05);
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        body.dark-mode .card-btn {
-            background: #2c394a;
-            color: #8ed081;
-        }
+        body.dark-mode .card-btn { background: #2c394a; color: #8ed081; }
 
-        /* MODAL (Detallı Məlumat Pəncərəsi) */
+        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -105,12 +100,6 @@
             position: relative;
             max-height: 85vh;
             overflow-y: auto;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
 
         .close-btn {
@@ -118,33 +107,26 @@
             top: 15px; right: 20px;
             font-size: 30px;
             cursor: pointer;
-            color: var(--text);
         }
 
         .modal-img {
-            width: 140px;
-            height: 200px;
+            width: 130px;
+            height: 180px;
             object-fit: cover;
             display: block;
             margin: 0 auto 15px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .modal-title {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
         .description {
             font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: var(--text);
-            opacity: 0.8;
+            line-height: 1.5;
+            margin: 15px 0;
+            opacity: 0.9;
+            text-align: center;
             border-top: 1px solid rgba(128,128,128,0.2);
-            padding-top: 15px;
+            padding-top: 10px;
         }
 
         .detail-row {
@@ -154,10 +136,9 @@
             border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
-        .label { color: #888; font-size: 14px; }
-        .val { font-weight: bold; color: var(--green); }
+        .label { color: #888; font-size: 13px; }
+        .val { font-weight: bold; color: var(--green); font-size: 13px; }
 
-        /* Ən sondakı YÜKLƏ düyməsi */
         .final-dl-btn {
             display: flex;
             align-items: center;
@@ -166,24 +147,20 @@
             background: var(--green);
             color: white;
             text-align: center;
-            padding: 16px;
-            margin-top: 25px;
+            padding: 15px;
+            margin-top: 20px;
             border-radius: 15px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
 
         .theme-btn {
             position: fixed;
             bottom: 20px; right: 20px;
             background: #333; color: white;
-            width: 55px; height: 55px;
+            width: 50px; height: 50px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -191,8 +168,8 @@
 
 <div class="grid">
     
-    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Sənsizlik', '1.jpg', '1.pdf', 'Sevgi', 'Azərbaycan', 'Bu əsər müəllifin ən çox oxunan kitablarından biridir. Sənsizlik mövzusu ətrafında qurulan hekayə oxucunu dərin düşüncələrə sövq edir.')">
-        <img src="1.jpg" alt="Kitab">
+    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Sənsizlik', 'https://mir.az/uploads/posts/2023-07/1688506591_sansizliq.jpg', 'https://sayt-adi.com/kitab.pdf', 'Sevgi', 'Azərbaycan', 'Bu kitab insanın daxili hissləri haqqında yazılmışdır.')">
+        <img src="https://mir.az/uploads/posts/2023-07/1688506591_sansizliq.jpg" alt="Kitab">
         <div class="info">
             <div class="author">Əli Məhərrəmov</div>
             <div class="name">"Sənsizlik"</div>
@@ -200,8 +177,8 @@
         <div class="card-btn">ƏTRAFLI BAX</div>
     </div>
 
-    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Dedektiv Con', '2.jpg', '2.pdf', 'Dedektiv', 'Azərbaycan', 'Gərgin süjet xətti və gözlənilməz sonluq. Dedektiv Conun növbəti sirli hadisəsi sizi heyran qoyacaq.')">
-        <img src="2.jpg" alt="Kitab">
+    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Dedektiv Con', 'kitab2.jpg', 'kitab2.pdf', 'Dedektiv', 'Azərbaycan', 'Sirli bir cinayətin izinə düşən qəhrəmanın hekayəsi.')">
+        <img src="kitab2.jpg" alt="Kitab">
         <div class="info">
             <div class="author">Əli Məhərrəmov</div>
             <div class="name">"Dedektiv Con"</div>
@@ -214,34 +191,17 @@
 <div id="bookModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeBook()">&times;</span>
-        
         <img id="m-img" src="" class="modal-img">
-        <h3 id="m-title" class="modal-title"></h3>
-
+        <h3 id="m-title" style="text-align:center; margin: 10px 0;"></h3>
         <div id="m-desc" class="description"></div>
-
-        <div class="detail-row">
-            <span class="label"><i class="fas fa-pen"></i> Müəllif:</span>
-            <span id="m-author" class="val"></span>
-        </div>
-        <div class="detail-row">
-            <span class="label"><i class="fas fa-bookmark"></i> Janr:</span>
-            <span id="m-genre" class="val"></span>
-        </div>
-        <div class="detail-row">
-            <span class="label"><i class="fas fa-language"></i> Dil:</span>
-            <span id="m-lang" class="val"></span>
-        </div>
-
-        <a id="m-link" href="#" download class="final-dl-btn">
-            <i class="fas fa-cloud-download-alt"></i> PDF YÜKLƏ
-        </a>
+        <div class="detail-row"><span class="label">Müəllif:</span><span id="m-author" class="val"></span></div>
+        <div class="detail-row"><span class="label">Janr:</span><span id="m-genre" class="val"></span></div>
+        <div class="detail-row"><span class="label">Dil:</span><span id="m-lang" class="val"></span></div>
+        <a id="m-link" href="#" download class="final-dl-btn"><i class="fas fa-download"></i> PDF YÜKLƏ</a>
     </div>
 </div>
 
-<div class="theme-btn" onclick="document.body.classList.toggle('dark-mode')">
-    <i class="fas fa-moon"></i>
-</div>
+<div class="theme-btn" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></div>
 
 <script>
     function openBook(author, title, img, pdf, genre, lang, desc) {
@@ -252,22 +212,22 @@
         document.getElementById('m-desc').innerText = desc;
         document.getElementById('m-img').src = img;
         document.getElementById('m-link').href = pdf;
-        
         document.getElementById('bookModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    function closeBook() {
+    function closeModal() {
         document.getElementById('bookModal').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
+    function closeBook() {
+        closeModal();
+    }
+
     window.onclick = function(event) {
-        if (event.target == document.getElementById('bookModal')) {
-            closeBook();
-        }
+        if (event.target == document.getElementById('bookModal')) { closeModal(); }
     }
 </script>
-
 </body>
 </html>
