@@ -3,231 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitab Portalı</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --bg: #eef2f5;
-            --card: #ffffff;
-            --text: #333;
-            --green: #28a745;
-            --modal-overlay: rgba(0,0,0,0.85);
-        }
-
-        body.dark-mode {
-            --bg: #1a222d;
-            --card: #242f3d;
-            --text: #fff;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            transition: 0.3s;
-        }
-
-        /* Ana Səhifə Grid Sistemi */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            padding: 15px;
-        }
-
+        /* Kartın ümumi dizaynı */
         .card {
-            background: var(--card);
-            border-radius: 20px;
+            width: 180px; /* Ehtiyaca görə dəyişə bilərsən */
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            cursor: pointer;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: sans-serif;
+            margin: 10px;
         }
 
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ŞƏKİL HİSSƏSİ - Problemin həlli buradadır */
         .card img {
             width: 100%;
-            height: 190px;
-            object-fit: cover;
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 22px;
-        }
-
-        .info {
-            padding: 5px 10px 15px;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .author { font-weight: bold; font-size: 14px; }
-        .name { font-size: 12px; opacity: 0.7; margin-top: 4px; }
-
-        .card-btn {
-            background: #f8f9fa;
-            color: var(--green);
-            text-align: center;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 11px;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            text-transform: uppercase;
-        }
-
-        body.dark-mode .card-btn { background: #2c394a; color: #8ed081; }
-
-        /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--modal-overlay);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .modal-content {
-            background: var(--card);
-            width: 90%;
-            max-width: 400px;
-            border-radius: 30px;
-            padding: 25px;
-            position: relative;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        .modal-img {
-            width: 130px;
-            height: 180px;
-            object-fit: cover;
+            height: 220px; /* Sabit hündürlük */
+            object-fit: contain; /* Şəkli kəsmədən, tam sığdırır */
+            background-color: #f8f9fa; /* Şəkil tam sığanda boş qalan yerlərin rəngi */
             display: block;
-            margin: 0 auto 15px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .description {
-            font-size: 13px;
-            line-height: 1.5;
-            margin: 15px 0;
-            opacity: 0.9;
+        /* İnformasiya hissəsi */
+        .info {
+            padding: 10px;
             text-align: center;
-            border-top: 1px solid rgba(128,128,128,0.2);
-            padding-top: 10px;
+            flex-grow: 1; /* Yazı az olsa belə düyməni aşağıda saxlayır */
         }
 
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(128,128,128,0.1);
-        }
-
-        .label { color: #888; font-size: 13px; }
-        .val { font-weight: bold; color: var(--green); font-size: 13px; }
-
-        .final-dl-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: var(--green);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 15px;
-            text-decoration: none;
+        .author {
+            font-size: 14px;
             font-weight: bold;
+            color: #333;
         }
 
-        .theme-btn {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            background: #333; color: white;
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+        .name {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Düymə hissəsi */
+        .card-btn {
+            background-color: #f1f1f1;
+            color: #28a745;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-top: 1px solid #eee;
         }
     </style>
 </head>
 <body>
 
-<div class="grid">
+<div class="card" onclick="openBook('Əli Məhərrəmov', 'Qəlb Yarası', 'https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', 'pdf_linki.pdf', 'Dram', 'Az', 'Açıqlama mətni...')">
+    <img src="https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg" alt="Kitab">
     
-    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Qəlb Yarası', 'https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', 'https://sayt-adi.com/kitab.pdf', 'Şeir/Dram', 'Azərbaycan', 'Bu kitab insanın daxili hissləri haqqında yazılmışdır.')">
-        <img src="https://ia601906.us.archive.org/35/items/elimeherremovofc-highlight-18279034543106991-webp-0/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg" alt="Kitab">
-        <div class="info">
-            <div class="author">Əli Məhərrəmov</div>
-            <div class="name">"Qəlb Yarası"</div>
-        </div>
-        <div class="card-btn">ƏTRAFLI BAX</div>
+    <div class="info">
+        <div class="author">Əli Məhərrəmov</div>
+        <div class="name">"Qəlb Yarası"</div>
     </div>
-
-    <div class="card" onclick="openBook('Əli Məhərrəmov', 'Dedektiv Con', 'kitab2.jpg', 'kitab2.pdf', 'Dedektiv', 'Azərbaycan', 'Sirli bir cinayətin izinə düşən qəhrəmanın hekayəsi.')">
-        <img src="kitab2.jpg" alt="Kitab">
-        <div class="info">
-            <div class="author">Əli Məhərrəmov</div>
-            <div class="name">"Dedektiv Con"</div>
-        </div>
-        <div class="card-btn">ƏTRAFLI BAX</div>
-    </div>
-
+    
+    <div class="card-btn">ƏTRAFLI BAX</div>
 </div>
-
-<div id="bookModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeBook()">&times;</span>
-        <img id="m-img" src="" class="modal-img">
-        <h3 id="m-title" style="text-align:center; margin: 10px 0;"></h3>
-        <div id="m-desc" class="description"></div>
-        <div class="detail-row"><span class="label">Müəllif:</span><span id="m-author" class="val"></span></div>
-        <div class="detail-row"><span class="label">Janr:</span><span id="m-genre" class="val"></span></div>
-        <div class="detail-row"><span class="label">Dil:</span><span id="m-lang" class="val"></span></div>
-        <a id="m-link" href="#" download class="final-dl-btn"><i class="fas fa-download"></i> PDF YÜKLƏ</a>
-    </div>
-</div>
-
-<div class="theme-btn" onclick="document.body.classList.toggle('dark-mode')"><i class="fas fa-moon"></i></div>
 
 <script>
-    function openBook(author, title, img, pdf, genre, lang, desc) {
-        document.getElementById('m-title').innerText = title;
-        document.getElementById('m-author').innerText = author;
-        document.getElementById('m-genre').innerText = genre;
-        document.getElementById('m-lang').innerText = lang;
-        document.getElementById('m-desc').innerText = desc;
-        document.getElementById('m-img').src = img;
-        document.getElementById('m-link').href = pdf;
-        document.getElementById('bookModal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        document.getElementById('bookModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    function closeBook() {
-        closeModal();
-    }
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('bookModal')) { closeModal(); }
+    function openBook(author, name, img, pdf, genre, lang, desc) {
+        console.log("Kitab açılır:", name);
+        // Bura klikləndikdə baş verəcək funksiyanı yaza bilərsən
     }
 </script>
+
 </body>
 </html>
