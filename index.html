@@ -1,152 +1,38 @@
-<!DOCTYPE html>
-<html lang="az">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7/24 Canlı Virtual TV</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        body { margin: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
-        .tv-container { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+<div class="playlist-section">
+    <h3>🎬 Kinolar</h3>
+    <button onclick="playYT('PLasdfghjkl123')">Döyüş Kinoları</button>
+    <button onclick="playYT('PLqwertyuiop456')">Komediya Filmləri</button>
+</div>
 
-        /* Məlumat Paneli */
-        .overlay {
-            position: absolute; top: 30px; left: 30px; background: rgba(0,0,0,0.7);
-            padding: 15px 25px; border-left: 5px solid #e50914; z-index: 10; pointer-events: none;
-        }
-        .live-dot { color: #ff0000; font-weight: bold; font-size: 14px; animation: blink 1.2s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-        #nowPlaying { font-size: 20px; margin-top: 5px; font-weight: 500; }
+<div class="playlist-section">
+    <h3>🎞️ Seriallar</h3>
+    <button onclick="playYT('PLzxcvbnm789')">Kurtlar Vadisi</button>
+</div>
 
-        /* Səs Düyməsi */
-        #startBtn {
-            position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.6);
-            color: white; border: none; font-size: 20px; font-weight: bold;
-            cursor: pointer; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .play-icon { font-size: 60px; margin-bottom: 10px; }
-
-        /* Gizli Menyu (Sağ tərəfdə) */
-        .side-menu {
-            position: absolute; right: -250px; top: 0; width: 250px; height: 100%;
-            background: rgba(0,0,0,0.9); transition: 0.4s; z-index: 50; padding: 20px;
-        }
-        .side-menu:hover { right: 0; }
-        .side-menu h3 { color: #e50914; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .list-container { overflow-y: auto; height: 85%; }
-        .list-container div { padding: 10px; cursor: pointer; border-bottom: 1px solid #222; font-size: 14px; }
-        .list-container div:hover { background: #e50914; }
-    </style>
-</head>
-<body>
-
-<div class="tv-container">
-    <button id="startBtn">
-        <div class="play-icon">▶</div>
-        YAYIMA QOŞUL (CANLI)
-    </button>
-    
-    <div class="overlay">
-        <div class="live-dot">● CANLI YAYIM</div>
-        <div id="nowPlaying">Kanal Hesablanır...</div>
-    </div>
-
-    <div class="side-menu">
-        <h3>KANALLAR</h3>
-        <div class="list-container" id="playlistItems"></div>
-    </div>
-
-    <video id="tvPlayer" playsinline></video>
+<div class="playlist-section">
+    <h3>🌐 IPTV (M3U)</h3>
+    <button onclick="playM3U('https://kanal-linki.com/live/playlist.m3u8')">Xəzər TV Canlı</button>
 </div>
 
 <script>
-    /* ============================================================
-       VİDEO BAZASI (Zaman sinxronu üçün müddətlər Saniyə ilədir)
-       ============================================================ */
-    const baza = [
-        { title: "Serial: Bölüm 1", url: "https://ia600801.us.archive.org/18/items/kurtlar-vadisi-pusu-1.-bolum-yuksek-goruntu-kalitesi-1080-p-hd/Kurtlar%20Vadisi%20Pusu%20_%201.%20B%C3%B6l%C3%BCm%20_%20Y%C3%BCksek%20G%C3%B6r%C3%BCnt%C3%BC%20Kalitesi%281080P_HD%29.mp4", duration: 1200 }, // 20 dəqiqə
-        { title: "Serial: Bölüm 2", url: "https://ia600900.us.archive.org/7/items/kurtlar-vadisi-pusu-2.-bolum-yuksek-goruntu-kalitesi-1080-p-hd/Kurtlar%20Vadisi%20Pusu%20_%202.%20B%C3%B6l%C3%BCm%20_%20Y%C3%BCksek%20G%C3%B6r%C3%BCnt%C3%BC%20Kalitesi%281080P_HD%29.mp4", duration: 1200 },
-        { title: "Canlı Yayım: Xəbərlər", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", duration: 600 },
-        { title: "Serial: Bölüm 3", url: "https://server.com/video3.mp4", duration: 1200 }
-    ];
-
-    const player = document.getElementById('tvPlayer');
-    const titleDisp = document.getElementById('nowPlaying');
-    const startBtn = document.getElementById('startBtn');
-    const listContainer = document.getElementById('playlistItems');
-    const hls = new Hls();
-
-    // 1. DÜNYA SAATINA GÖRƏ HANSI VİDEODA OLDUĞUMUZU TAPIRIQ
-    function getLiveState() {
-        let totalTime = baza.reduce((s, v) => s + v.duration, 0);
-        let nowInSeconds = Math.floor(Date.now() / 1000);
-        let point = nowInSeconds % totalTime; // Yayımın hansı saniyəsindəyik?
-
-        let elapsed = 0;
-        for (let i = 0; i < baza.length; i++) {
-            if (point < elapsed + baza[i].duration) {
-                return { index: i, seek: point - elapsed };
-            }
-            elapsed += baza[i].duration;
-        }
+    // YouTube funksiyasını bu şəkildə yenilə (link strukturunu düzəltdim)
+    function playYT(playlistID) {
+        playerBox.innerHTML = `
+            <iframe id="yt-player" 
+                src="https://www.youtube.com/embed/videoseries?list=${playlistID}&autoplay=1&loop=1&playlist=${playlistID}" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen>
+            </iframe>`;
+        statusText.innerText = "Hazırda yayım: YouTube Pleylist";
     }
 
-    // 2. YAYIMI BAŞLAT
-    function startStream(manualIndex = null) {
-        let state = getLiveState();
-        let index = (manualIndex !== null) ? manualIndex : state.index;
-        let item = baza[index];
-        
-        titleDisp.innerText = item.title;
-
-        if (item.url.includes('.m3u8')) {
-            if (Hls.isSupported()) {
-                hls.loadSource(item.url);
-                hls.attachMedia(player);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    if (manualIndex === null) player.currentTime = state.seek;
-                    player.play();
-                });
-            }
-        } else {
-            hls.detachMedia();
-            player.src = item.url;
-            // Əgər özün menyudan seçsən, sıfırdan başlayır, yoxsa canlı vaxtdan
-            player.onloadedmetadata = () => {
-                if (manualIndex === null) player.currentTime = state.seek;
-                player.play();
-            };
-        }
+    // M3U funksiyası eynidir
+    function playM3U(url) {
+        playerBox.innerHTML = `
+            <video id="video" controls autoplay style="width:100%; height:100%;">
+                <source src="${url}" type="application/x-mpegURL">
+                Brauzeriniz HLS (.m3u8) dəstəkləmir.
+            </video>`;
+        statusText.innerText = "Hazırda yayım: M3U Canlı Kanal";
     }
-
-    // Menyu yaratmaq
-    baza.forEach((item, i) => {
-        let div = document.createElement('div');
-        div.innerText = item.title;
-        div.onclick = () => { startStream(i); };
-        listContainer.appendChild(div);
-    });
-
-    // Video bitəndə növbəti sinxron videoya keç
-    player.onended = () => { startStream(); };
-
-    // Səsi aç və yayımı aktivləşdir
-    startBtn.onclick = () => {
-        startBtn.style.display = 'none';
-        player.muted = false;
-        startStream();
-    };
-
-    // Hər 30 saniyədən bir yayımı saatla yoxla (Sinxronluq üçün)
-    setInterval(() => {
-        if (!player.paused && !player.seeking) {
-            let state = getLiveState();
-            if (Math.abs(player.currentTime - state.seek) > 10) {
-                player.currentTime = state.seek;
-            }
-        }
-    }, 30000);
 </script>
-</body>
-</html>
