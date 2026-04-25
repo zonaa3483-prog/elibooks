@@ -2,73 +2,82 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M3U8 Canlı Yayım Oxuyucu</title>
+    <title>Canlı Serial Kanalı</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: white; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { width: 100%; max-width: 800px; }
-        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
-        input { flex-grow: 1; padding: 10px; border-radius: 5px; border: none; outline: none; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #218838; }
-        video { width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: black; }
-        .status { margin-top: 10px; font-size: 14px; color: #888; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        .player-wrapper { position: relative; width: 100vw; height: 100vh; }
+        video { width: 100%; height: 100%; object-fit: contain; }
+        .info { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 5px; border-left: 5px solid #ff0000; }
+        .btn-m3u { position: absolute; bottom: 20px; right: 20px; padding: 12px 20px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-m3u:hover { background: #b20710; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>M3U8 / HLS Player</h2>
-    
-    <div class="controls">
-        <input type="text" id="streamUrl" placeholder="Bura .m3u8 və ya yayım linkini yapışdırın...">
-        <button onclick="loadStream()">OXUT</button>
+<div class="player-wrapper">
+    <div class="info">
+        <div style="color: #ff0000; font-weight: bold; font-size: 12px;">● CANLI YAYIM</div>
+        <div id="videoTitle" style="font-size: 18px; margin-top: 5px;">Yüklənir...</div>
     </div>
-
-    <video id="video" controls autocomplete="off"></video>
-    <div id="status" class="status">Gözlənilir...</div>
+    
+    <video id="video" controls autoplay muted playsinline></video>
+    
+    <button class="btn-m3u" id="downloadM3U">OTT Player (.M3U) Yüklə</button>
 </div>
 
 <script>
-    function loadStream() {
-        const video = document.getElementById('video');
-        const streamUrl = document.getElementById('streamUrl').value.trim();
-        const status = document.getElementById('status');
+    // SERIAL VƏ BÖLÜMLƏRİ BURA ƏLAVƏ ET
+    const playlist = [
+        { title: "Serial - Bölüm 1", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
+        { title: "Serial - Bölüm 2", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+        { title: "Serial - Bölüm 3", url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+    ];
 
-        if (!streamUrl) {
-            alert("Zəhmət olmasa bir link daxil edin!");
-            return;
-        }
+    let currentIndex = 0;
+    const video = document.getElementById('video');
+    const videoTitle = document.getElementById('videoTitle');
+    const hls = new Hls();
 
-        status.innerText = "Yayım yüklənir...";
+    function playSource(index) {
+        if (index >= playlist.length) { currentIndex = 0; index = 0; }
+        const item = playlist[index];
+        videoTitle.innerText = item.title;
 
-        // Brauzer HLS-i birbaşa dəstəkləyirsə (Məsələn: Safari)
-        if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = streamUrl;
-            video.addEventListener('loadedmetadata', function() {
+        if (item.url.includes('.m3u8')) {
+            if (Hls.isSupported()) {
+                hls.loadSource(item.url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else {
+                video.src = item.url;
                 video.play();
-                status.innerText = "Yayım başladı (Native)";
-            });
-        } 
-        // Digər brauzerlər üçün Hls.js kitabxanası
-        else if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(streamUrl);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
-                status.innerText = "Yayım başladı (HLS.js)";
-            });
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    status.innerText = "Xəta: Link düzgün deyil və ya yayım aktiv deyil.";
-                }
-            });
+            }
         } else {
-            status.innerText = "Brauzeriniz bu texnologiyanı dəstəkləmir.";
+            hls.detachMedia();
+            video.src = item.url;
+            video.play().catch(() => console.log("Səs üçün ekrana toxunun"));
         }
     }
+
+    // AVTOMATİK NÖVBƏTİ VƏ DÖVR (LOOP)
+    video.addEventListener('ended', () => {
+        currentIndex++;
+        playSource(currentIndex);
+    });
+
+    // M3U YÜKLƏMƏ FUNKSİYASI
+    document.getElementById('downloadM3U').addEventListener('click', () => {
+        let m3u = "#EXTM3U\n";
+        playlist.forEach(item => m3u += `#EXTINF:-1,${item.title}\n${item.url}\n`);
+        const blob = new Blob([m3u], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'serial_kanali.m3u';
+        a.click();
+    });
+
+    playSource(currentIndex);
 </script>
 
 </body>
