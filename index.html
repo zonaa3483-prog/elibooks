@@ -2,83 +2,91 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>Canlı Serial Kanalı</title>
+    <title>7/24 Sinxron Serial Kanalı</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
-        .player-wrapper { position: relative; width: 100vw; height: 100vh; }
+        .tv-screen { position: relative; width: 100vw; height: 100vh; }
         video { width: 100%; height: 100%; object-fit: contain; }
-        .info { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 5px; border-left: 5px solid #ff0000; }
-        .btn-m3u { position: absolute; bottom: 20px; right: 20px; padding: 12px 20px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-m3u:hover { background: #b20710; }
+        .info { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-left: 5px solid red; z-index: 10; }
+        #startBtn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px 40px; background: red; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 50px; z-index: 100; }
     </style>
 </head>
 <body>
 
-<div class="player-wrapper">
+<div class="tv-screen">
+    <button id="startBtn">YAYIMA QOŞUL (CANLI)</button>
     <div class="info">
-        <div style="color: #ff0000; font-weight: bold; font-size: 12px;">● CANLI YAYIM</div>
-        <div id="videoTitle" style="font-size: 18px; margin-top: 5px;">Yüklənir...</div>
+        <div style="color:red; font-weight:bold;">● CANLI</div>
+        <div id="currentTitle">Kanal Yüklenir...</div>
     </div>
-    
-    <video id="video" controls autoplay muted playsinline></video>
-    
-    <button class="btn-m3u" id="downloadM3U">OTT Player (.M3U) Yüklə</button>
+    <video id="video" playsinline></video>
 </div>
 
 <script>
-    // SERIAL VƏ BÖLÜMLƏRİ BURA ƏLAVƏ ET
-    const playlist = [
-        { title: "Kurtlar Vadisi Pusu - 1 Bölüm", url: "https://ia600801.us.archive.org/18/items/kurtlar-vadisi-pusu-1.-bolum-yuksek-goruntu-kalitesi-1080-p-hd/Kurtlar%20Vadisi%20Pusu%20_%201.%20B%C3%B6l%C3%BCm%20_%20Y%C3%BCksek%20G%C3%B6r%C3%BCnt%C3%BC%20Kalitesi%281080P_HD%29.mp4" },
-        { title: "Kurtlar Vadisi Pusu - 2 Bölüm", url: "https://ia600900.us.archive.org/7/items/kurtlar-vadisi-pusu-2.-bolum-yuksek-goruntu-kalitesi-1080-p-hd/Kurtlar%20Vadisi%20Pusu%20_%202.%20B%C3%B6l%C3%BCm%20_%20Y%C3%BCksek%20G%C3%B6r%C3%BCnt%C3%BC%20Kalitesi%281080P_HD%29.mp4" },
-        { title: "Serial - Bölüm 3", url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" }
+    // BAZA - Bütün bölümlərin müddətini (saniyə ilə) dəqiq yazmalısan
+    const baza = [
+        { title: "Bölüm 1", url: "https://server.com/bolum1.mp4", duration: 1200 }, // 20 dəqiqə
+        { title: "Bölüm 2", url: "https://server.com/bolum2.mp4", duration: 1200 },
+        { title: "Canlı Kanal", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", duration: 3600 } // 1 saat
     ];
 
-    let currentIndex = 0;
     const video = document.getElementById('video');
-    const videoTitle = document.getElementById('videoTitle');
+    const title = document.getElementById('currentTitle');
+    const startBtn = document.getElementById('startBtn');
     const hls = new Hls();
 
-    function playSource(index) {
-        if (index >= playlist.length) { currentIndex = 0; index = 0; }
-        const item = playlist[index];
-        videoTitle.innerText = item.title;
+    function getLiveState() {
+        let totalDuration = baza.reduce((a, b) => a + b.duration, 0);
+        let now = Math.floor(Date.now() / 1000); 
+        let currentPoint = now % totalDuration; // Pleylistdəki hazırkı saniyəmiz
+
+        let elapsed = 0;
+        for (let i = 0; i < baza.length; i++) {
+            if (currentPoint < elapsed + baza[i].duration) {
+                return { index: i, seek: currentPoint - elapsed };
+            }
+            elapsed += baza[i].duration;
+        }
+    }
+
+    function syncPlay() {
+        const state = getLiveState();
+        const item = baza[state.index];
+        title.innerText = item.title;
 
         if (item.url.includes('.m3u8')) {
             if (Hls.isSupported()) {
                 hls.loadSource(item.url);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else {
-                video.src = item.url;
-                video.play();
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.currentTime = state.seek;
+                    video.play();
+                });
             }
         } else {
-            hls.detachMedia();
             video.src = item.url;
-            video.play().catch(() => console.log("Səs üçün ekrana toxunun"));
+            video.currentTime = state.seek;
+            video.play();
         }
     }
 
-    // AVTOMATİK NÖVBƏTİ VƏ DÖVR (LOOP)
-    video.addEventListener('ended', () => {
-        currentIndex++;
-        playSource(currentIndex);
-    });
+    // Video bitəndə növbəti sinxron nöqtəyə keç
+    video.onended = () => syncPlay();
 
-    // M3U YÜKLƏMƏ FUNKSİYASI
-    document.getElementById('downloadM3U').addEventListener('click', () => {
-        let m3u = "#EXTM3U\n";
-        playlist.forEach(item => m3u += `#EXTINF:-1,${item.title}\n${item.url}\n`);
-        const blob = new Blob([m3u], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'serial_kanali.m3u';
-        a.click();
-    });
+    startBtn.onclick = () => {
+        startBtn.style.display = 'none';
+        video.muted = false;
+        syncPlay();
+    };
 
-    playSource(currentIndex);
+    // Hər 1 dəqiqədən bir saatı yoxla ki, yayım qaçmasın (TV məntiqi)
+    setInterval(() => {
+        let state = getLiveState();
+        if (Math.abs(video.currentTime - state.seek) > 10) {
+            syncPlay();
+        }
+    }, 60000);
 </script>
-
 </body>
 </html>
