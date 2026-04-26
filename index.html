@@ -1,38 +1,199 @@
-<div class="playlist-section">
-    <h3>🎬 Kinolar</h3>
-    <button onclick="playYT('PLasdfghjkl123')">Döyüş Kinoları</button>
-    <button onclick="playYT('PLqwertyuiop456')">Komediya Filmləri</button>
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mir.az Kloni - Axtarış və Dark Mode</title>
+    <style>
+        /* Dəyişənlər (Həm Gündüz, həm Gecə üçün) */
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #2d3e50;
+            --card-bg: #ffffff;
+            --header-color: #ffffff;
+            --input-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --card-bg: #2d2d2d;
+            --header-color: #1a1a1a;
+            --input-bg: #3d3d3d;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        /* Üst Panel: Axtarış və Dark Mode */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            outline: none;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Grid Sistemi */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Kitab Kartı */
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            cursor: pointer;
+            text-align: center;
+            padding-bottom: 15px;
+        }
+
+        .book-card:hover { transform: translateY(-5px); }
+
+        .book-card img { width: 100%; height: 280px; object-fit: cover; }
+
+        .book-card h3 { font-size: 16px; margin: 10px; }
+
+        .genre { color: #27ae60; font-size: 14px; font-weight: bold; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; z-index: 10;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px; border-radius: 15px;
+            max-width: 500px; width: 90%; text-align: center;
+        }
+
+        .download-btn {
+            display: inline-block; background-color: #2ecc71;
+            color: white; padding: 12px 25px; text-decoration: none;
+            border-radius: 5px; margin-top: 20px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <input type="text" id="searchInput" placeholder="Kitab və ya müəllif axtar..." onkeyup="filterBooks()">
+    <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️ Rejim</button>
 </div>
 
-<div class="playlist-section">
-    <h3>🎞️ Seriallar</h3>
-    <button onclick="playYT('PLzxcvbnm789')">Kurtlar Vadisi</button>
+<div class="book-grid" id="bookGrid">
+    <div class="book-card" onclick="openModal('Polad Kral', 'Devney Perry', 'Roman', 'Montana qəsəbəsində keçən romantik hekayə.', 'link1.pdf')">
+        <img src="https://mir.az/uploads/posts/2026-04/183144.jpg">
+        <h3>Polad Kral</h3>
+        <p>Devney Perry</p>
+        <span class="genre">Roman</span>
+    </div>
+
+    <div class="book-card" onclick="openModal('The Gray Man', 'Mark Greaney', 'Roman', 'Aksiyon dolu casusluq romanı.', 'link2.pdf')">
+        <img src="https://mir.az/uploads/posts/2026-04/grayman.jpg">
+        <h3>The Gray Man</h3>
+        <p>Mark Greaney</p>
+        <span class="genre">Roman</span>
+    </div>
+
+    <div class="book-card" onclick="openModal('Surlar ve Ölüm', 'Sabaa Tahir', 'Roman', 'Fantastik dünyada intiqam və sevgi.', 'link3.pdf')">
+        <img src="https://mir.az/uploads/posts/2026-04/183146.jpg">
+        <h3>Surlar ve Ölüm</h3>
+        <p>Sabaa Tahir</p>
+        <span class="genre">Roman</span>
+    </div>
 </div>
 
-<div class="playlist-section">
-    <h3>🌐 IPTV (M3U)</h3>
-    <button onclick="playM3U('https://kanal-linki.com/live/playlist.m3u8')">Xəzər TV Canlı</button>
+<div id="bookModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p><strong id="modalAuthor"></strong></p>
+        <p id="modalDesc"></p>
+        <a href="#" id="downloadLink" class="download-btn" target="_blank" download>Yüklə</a>
+        <button onclick="closeModal()" style="margin-top:10px; border:none; background:none; color:red; cursor:pointer;">Bağla</button>
+    </div>
 </div>
 
 <script>
-    // YouTube funksiyasını bu şəkildə yenilə (link strukturunu düzəltdim)
-    function playYT(playlistID) {
-        playerBox.innerHTML = `
-            <iframe id="yt-player" 
-                src="https://youtube.com/playlist?list=PLVbTLpECk_CsYDaCu8f98Vt6-s8taESp7=${playlistID}&autoplay=1&loop=1&playlist=${playlistID}" 
-                allow="autoplay; encrypted-media" 
-                allowfullscreen>
-            </iframe>`;
-        statusText.innerText = "Hazırda yayım: YouTube Pleylist";
+    // Axtarış Funksiyası
+    function filterBooks() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('book-card');
+
+        for (let card of cards) {
+            let title = card.getElementsByTagName('h3')[0].innerText.toLowerCase();
+            let author = card.getElementsByTagName('p')[0].innerText.toLowerCase();
+            
+            if (title.includes(input) || author.includes(input)) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        }
     }
 
-    // M3U funksiyası eynidir
-    function playM3U(url) {
-        playerBox.innerHTML = `
-            <video id="video" controls autoplay style="width:100%; height:100%;">
-                <source src="${url}" type="application/x-mpegURL">
-                Brauzeriniz HLS (.m3u8) dəstəkləmir.
-            </video>`;
-        statusText.innerText = "Hazırda yayım: M3U Canlı Kanal";
+    // Gecə-Gündüz Rejimi
+    function toggleTheme() {
+        const body = document.body;
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+        }
+    }
+
+    // Modal Funksiyaları
+    function openModal(title, author, genre, desc, link) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalAuthor').innerText = author;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('downloadLink').href = link;
+        document.getElementById('bookModal').style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById('bookModal').style.display = "none";
     }
 </script>
+
+</body>
+</html>
