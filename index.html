@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitab Portalı - Detallı Baxış</title>
+    <title>Kitab Portalı - Instagram Style</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -11,6 +11,7 @@
             --card-bg: #ffffff;
             --accent-color: #3498db;
             --border-color: #ddd;
+            --nav-bg: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -18,6 +19,7 @@
             --text-color: #e4e6eb;
             --card-bg: #1e1e1e;
             --border-color: #333;
+            --nav-bg: #1e1e1e;
         }
 
         body {
@@ -25,169 +27,176 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 20px 20px 80px 20px; /* Alt boşluq naviqasiya üçün vacibdir */
             transition: 0.3s;
         }
 
-        /* Üst Kontrollar */
+        /* Üst Panel */
         .header-tools {
             display: flex;
             gap: 15px;
             max-width: 800px;
             margin: 0 auto 30px;
+            position: sticky;
+            top: 10px;
+            z-index: 10;
         }
 
         #searchInput {
             flex: 1;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 20px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .theme-btn {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 8px;
-            border: none;
-            background: var(--accent-color);
-            color: white;
-        }
-
-        /* Kitab Siyahısı - Grid deyil, Sütun şəklində */
+        /* Kitab Kartları */
         .book-container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         .book-item {
             background: var(--card-bg);
             border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
             border: 1px solid var(--border-color);
         }
 
         .book-item img {
             width: 100%;
-            height: 450px; /* Şəkilləri daha böyük etdim */
+            height: auto;
+            max-height: 500px;
             object-fit: cover;
         }
 
         .book-info {
-            padding: 20px;
-            text-align: center;
+            padding: 15px;
         }
+
+        .book-info h3 { margin: 0 0 10px 0; font-size: 18px; }
 
         .detail-btn {
             background: var(--accent-color);
             color: white;
-            padding: 12px 30px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            width: 100%;
             font-weight: bold;
-            transition: 0.3s;
         }
 
-        .detail-btn:hover { opacity: 0.8; }
+        /* İnstagram Tipli Alt Naviqasiya */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0;
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+        }
 
-        /* Full Screen Məlumat Səhifəsi (Overlay) */
+        .nav-item {
+            text-align: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        /* Detallı Səhifə (Full Page Overlay) */
         .full-page {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color);
-            z-index: 100;
+            z-index: 2000;
             overflow-y: auto;
-            padding: 40px 20px;
+            padding: 20px;
             box-sizing: border-box;
         }
 
         .content-wrapper {
-            max-width: 900px;
+            max-width: 600px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 40px;
+            padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .close-btn {
-            float: right;
-            font-size: 30px;
-            cursor: pointer;
-            color: red;
-        }
+        .close-btn { font-size: 24px; cursor: pointer; color: var(--accent-color); font-weight: bold; margin-bottom: 20px; display: block; }
+        
+        .wiki-section { background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px; margin-top: 20px; }
 
-        .wiki-section {
-            border-left: 4px solid var(--accent-color);
-            padding-left: 20px;
-            margin-top: 30px;
-            background: rgba(52, 152, 219, 0.05);
-            padding: 20px;
-        }
+        [data-theme="dark"] .wiki-section { background: rgba(255,255,255,0.05); }
 
-        .download-area {
-            margin-top: 30px;
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        h2 { border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; }
     </style>
 </head>
 <body>
 
 <div class="header-tools">
-    <input type="text" id="searchInput" placeholder="Kitab və ya müəllif axtar..." onkeyup="filterBooks()">
-    <button class="theme-btn" onclick="toggleTheme()">Rejim</button>
+    <input type="text" id="searchInput" placeholder="Axtar..." onkeyup="filterBooks()">
 </div>
 
 <div class="book-container" id="bookGrid">
     <div class="book-item">
+        <div style="padding: 10px; font-weight: bold;">Devney Perry</div>
         <img src="https://mir.az/uploads/posts/2026-04/183144.jpg">
         <div class="book-info">
-            <h3>Devney Perry - "Polad Kral"</h3>
-            <button class="detail-btn" onclick="openFullPage('Polad Kral', 'Devney Perry', 'Bu kitab Montana qəsəbəsində keçən düşmənlikdən sevgiyə çevrilən bir romantikadır.', 'Devney Perry USA Today-in ən çox satılan müəllifidir. O, Montana ştatında yaşayır və emosional, kiçik qəsəbə romanları ilə tanınır.', 'link1.pdf')">Ətraflı Bax</button>
+            <h3>Polad Kral</h3>
+            <button class="detail-btn" onclick="openFullPage('Polad Kral', 'Devney Perry', 'Bu kitab Montana qəsəbəsində keçən romantikadır.', 'Devney Perry bestseller müəllifidir.', 'link1.pdf')">Detalları Gör</button>
         </div>
     </div>
 
     <div class="book-item">
+        <div style="padding: 10px; font-weight: bold;">Sabaa Tahir</div>
         <img src="https://mir.az/uploads/posts/2026-04/183146.jpg">
         <div class="book-info">
-            <h3>Sabaa Tahir - "Surlar ve Ölüm"</h3>
-            <button class="detail-btn" onclick="openFullPage('Surlar ve Ölüm', 'Sabaa Tahir', 'Fantastik bir dünyada keçən intiqam və azadlıq mübarizəsi.', 'Sabaa Tahir Londonda doğulub və Kaliforniyada böyüyüb. Onun kitabları New York Times-ın bestseller siyahılarında yer alır.', 'link2.pdf')">Ətraflı Bax</button>
+            <h3>Surlar ve Ölüm</h3>
+            <button class="detail-btn" onclick="openFullPage('Surlar ve Ölüm', 'Sabaa Tahir', 'Fantastik intiqam hekayəsi.', 'Sabaa Tahir NYT bestseller müəllifidir.', 'link2.pdf')">Detalları Gör</button>
         </div>
     </div>
 </div>
 
+<div class="bottom-nav">
+    <div class="nav-item" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">🏠<span>Ana Səhifə</span></div>
+    <div class="nav-item" onclick="document.getElementById('searchInput').focus()">🔍<span>Kəşf et</span></div>
+    <div class="nav-item">➕<span>Paylaş</span></div>
+    <div class="nav-item" onclick="toggleTheme()">🌓<span>Rejim</span></div>
+    <div class="nav-item">👤<span>Profil</span></div>
+</div>
+
 <div id="fullPage" class="full-page">
     <div class="content-wrapper">
-        <span class="close-btn" onclick="closeFullPage()">&times; Geri qayıt</span>
-        
-        <h1 id="p-title" style="color:var(--accent-color)"></h1>
-        <h3>Müəllif: <span id="p-author"></span></h3>
-
-        <div class="book-about">
-            <h2>📖 Kitab Haqqında</h2>
-            <p id="p-desc"></p>
-        </div>
-
+        <span class="close-btn" onclick="closeFullPage()">← Geri</span>
+        <h1 id="p-title"></h1>
+        <p><strong>Müəllif:</strong> <span id="p-author"></span></p>
+        <hr>
+        <h3>📖 Kitab Haqqında</h3>
+        <p id="p-desc"></p>
         <div class="wiki-section">
-            <h2>👤 Müəllif Haqqında (Wikipedia)</h2>
+            <h3>👤 Müəllif (Wiki)</h3>
             <p id="p-author-info"></p>
         </div>
-
-        <div class="download-area">
-            <a href="#" id="p-link" class="detail-btn" style="background:#2ecc71; text-decoration:none;" target="_blank">PDF OLARAQ YÜKLƏ</a>
-        </div>
+        <br>
+        <a href="#" id="p-link" class="detail-btn" style="display:block; text-align:center; text-decoration:none; background:#2ecc71;" target="_blank">YÜKLƏ (PDF)</a>
     </div>
 </div>
 
@@ -198,9 +207,8 @@
         document.getElementById('p-desc').innerText = desc;
         document.getElementById('p-author-info').innerText = authorInfo;
         document.getElementById('p-link').href = link;
-        
         document.getElementById('fullPage').style.display = "block";
-        document.body.style.overflow = "hidden"; // Ana səhifədə skrolu bağla
+        document.body.style.overflow = "hidden";
     }
 
     function closeFullPage() {
@@ -209,9 +217,8 @@
     }
 
     function toggleTheme() {
-        document.body.getAttribute('data-theme') === 'dark' ? 
-        document.body.removeAttribute('data-theme') : 
-        document.body.setAttribute('data-theme', 'dark');
+        const body = document.body;
+        body.getAttribute('data-theme') === 'dark' ? body.removeAttribute('data-theme') : body.setAttribute('data-theme', 'dark');
     }
 
     function filterBooks() {
