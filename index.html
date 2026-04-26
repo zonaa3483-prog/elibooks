@@ -3,225 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mir.az Oxşarı - Kitab Portalı</title>
+    <title>Mir.az Klon - Kitab Yükləmə</title>
     <style>
+        /* --- CSS BÖLMƏSİ --- */
         :root {
-            --primary-color: #5cb85c;
-            --bg-color: #f4f4f4;
+            --bg-color: #f0f2f5;
+            --navbar-bg: #5cb85c;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --sub-text: #777;
+            --premium-color: #ff4d4d;
+            --modal-overlay: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Qaranlıq Rejim Rəngləri */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --navbar-bg: #2d2d2d;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --sub-text: #aaa;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* Header */
-        header {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
+        /* Navbar və Axtarış */
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .logo { color: var(--primary-color); font-weight: bold; font-size: 24px; }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
 
-        /* Grid Sistemi */
-        .book-grid {
+        .search-container {
+            flex-grow: 1;
+            margin: 0 20px;
+            max-width: 500px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+        }
+
+        .theme-btn {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Kitab Kartları */
+        .container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
         }
 
         .book-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
-            overflow: hidden;
+            padding: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             text-align: center;
-            padding-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: 0.3s;
         }
 
-        .book-card:hover { transform: translateY(-5px); }
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .premium-label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--premium-color);
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
 
         .book-card img {
             width: 100%;
-            height: 280px;
+            height: 220px;
             object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-        .book-card h3 { font-size: 16px; margin: 10px; color: #333; }
-
-        .btn-detail {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
+        .book-card h3 {
+            font-size: 14px;
+            margin: 10px 0 5px 0;
+            height: 40px;
+            overflow: hidden;
         }
 
-        /* Modal (Böyük Pəncərə) */
+        .genre {
+            color: #5cb85c;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Modal (Ətraflı Pəncərə) */
         .modal {
             display: none;
             position: fixed;
             z-index: 1000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            align-items: center; justify-content: center;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-overlay);
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 25px;
             width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .close-btn {
             position: absolute;
-            right: 15px; top: 10px;
-            font-size: 24px; cursor: pointer;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .modal-header {
+            display: flex;
+            gap: 20px;
+        }
+
+        .modal-header img {
+            width: 150px;
+            border-radius: 10px;
         }
 
         .download-btn {
-            display: block;
-            background: #27ae60;
+            background-color: #5cb85c;
             color: white;
-            text-align: center;
+            border: none;
             padding: 12px;
-            text-decoration: none;
             border-radius: 8px;
-            margin-top: 20px;
+            cursor: pointer;
             font-weight: bold;
-        }
-
-        /* Kitab Əlavə Etmə Forması */
-        .add-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 40px;
-            border: 2px dashed var(--primary-color);
-        }
-
-        .add-section input, .add-section textarea {
-            width: 100%; margin: 5px 0; padding: 8px; box-sizing: border-box;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">Mir.az <small style="color:gray; font-size:12px">Klon</small></div>
-    <button onclick="document.getElementById('add-form').scrollIntoView()" class="btn-detail">Yeni Kitab +</button>
-</header>
-
-<div class="book-grid" id="bookGrid">
+<nav class="navbar">
+    <div class="logo">Mir.az</div>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Kitab və ya müəllif axtar..." onkeyup="searchBooks()">
     </div>
+    <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">🌙 Gecə</button>
+</nav>
+
+<div class="container" id="bookGrid">
+    <div class="book-card" onclick="openModal('Polad Kral', 'Devney Perry', 'Roman', 'Bu kitab Devney Perry-nin ən çox oxunan əsərlərindən biridir. Dram və romantika janrında yazılmışdır.', 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1649174547i/60742111.jpg')">
+        <span class="premium-label">● PREMİUM</span>
+        <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1649174547i/60742111.jpg" alt="Book">
+        <h3>Devney Perry "Polad Kral"</h3>
+        <p class="genre">Roman</p>
+    </div>
+
+    <div class="book-card" onclick="openModal('The Gray Man', 'Mark Greaney', 'Triller', 'Casusluq və aksiyon janrında olan bu roman, Netflix filminin əsasını təşkil edir.', 'https://m.media-amazon.com/images/I/81+X6nZ0-eL._AC_UF1000,1000_QL80_.jpg')">
+        <span class="premium-label">● PREMİUM</span>
+        <img src="https://m.media-amazon.com/images/I/81+X6nZ0-eL._AC_UF1000,1000_QL80_.jpg" alt="Book">
+        <h3>Mark Greaney "The Gray Man"</h3>
+        <p class="genre">Roman</p>
+    </div>
+
+    <div class="book-card" onclick="openModal('Surlar və Ölüm', 'Sabaa Tahir', 'Fantastika', 'Sabaa Tahirin məşhur fantastik seriyasının həyəcanverici bir hissəsi.', 'https://m.media-amazon.com/images/I/91r6m509vKL._AC_UF1000,1000_QL80_.jpg')">
+        <span class="premium-label">● PREMİUM</span>
+        <img src="https://m.media-amazon.com/images/I/91r6m509vKL._AC_UF1000,1000_QL80_.jpg" alt="Book">
+        <h3>Sabaa Tahir "Surlar və Ölüm"</h3>
+        <p class="genre">Roman</p>
+    </div>
+</div>
 
 <div id="bookModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 id="m-title">Kitab Adı</h2>
-        <p><strong>Müəllif:</strong> <span id="m-author"></span></p>
-        <p><strong>Janr:</strong> <span id="m-genre"></span></p>
-        <p><strong>Dil:</strong> <span id="m-lang"></span></p>
-        <hr>
-        <p id="m-desc">Məlumat burada görünəcək...</p>
-        <a id="m-link" href="#" class="download-btn" download>Kitabı Yüklə (PDF)</a>
+        <div id="modalData">
+            </div>
     </div>
 </div>
 
-<div class="add-section" id="add-form">
-    <h3>Yeni Kitab Əlavə Et</h3>
-    <input type="text" id="in-title" placeholder="Kitabın adı">
-    <input type="text" id="in-author" placeholder="Müəllif">
-    <input type="text" id="in-genre" placeholder="Janr">
-    <input type="text" id="in-lang" placeholder="Dil">
-    <input type="text" id="in-img" placeholder="Şəkil linki (URL)">
-    <input type="text" id="in-pdf" placeholder="PDF yükləmə linki">
-    <textarea id="in-desc" placeholder="Kitab haqqında qısa məlumat"></textarea>
-    <button class="btn-detail" style="width:100%" onclick="addNewBook()">Siyahıya Əlavə Et</button>
-</div>
-
 <script>
-    // İlkin 10 kitab bazası
-    let books = [
-        {title: "Polad Kral", author: "Devney Perry", genre: "Roman", lang: "Azərbaycan", desc: "Ehtiras və güc haqqında maraqlı bir hekayə.", img: "https://via.placeholder.com/200x280", link: "#"},
-        {title: "The Gray Man", author: "Mark Greaney", genre: "Triller", lang: "Türk", desc: "Peşəkar bir qatilin həyatından bəhs edir.", img: "https://via.placeholder.com/200x280", link: "#"},
-        {title: "Surlar ve Ölüm", author: "Sabaa Tahir", genre: "Fantastika", lang: "Türk", desc: "Qədim imperiya və mübarizə.", img: "https://via.placeholder.com/200x280", link: "#"}
-        // Bura daha 7 dənə oxşar obyekt əlavə edib 10-a tamamlaya bilərsiniz
-    ];
+    /* --- JAVASCRIPT BÖLMƏSİ --- */
 
-    const grid = document.getElementById('bookGrid');
+    // Gecə-Gündüz Rejimi Funksiyası
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('themeToggle');
+        
+        if (body.hasAttribute('data-theme')) {
+            body.removeAttribute('data-theme');
+            btn.innerText = "🌙 Gecə";
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.innerText = "☀️ Gündüz";
+        }
+    }
 
-    // Kitabları ekrana çıxarmaq
-    function displayBooks() {
-        grid.innerHTML = "";
-        books.forEach((book, index) => {
-            grid.innerHTML += `
-                <div class="book-card">
-                    <img src="${book.img}" alt="book">
-                    <h3>${book.title}</h3>
-                    <p style="color:gray">${book.genre}</p>
-                    <button class="btn-detail" onclick="openModal(${index})">Ətraflı</button>
+    // Modal Açmaq Funksiyası
+    function openModal(title, author, genre, description, imgSrc) {
+        const modal = document.getElementById('bookModal');
+        const content = document.getElementById('modalData');
+
+        content.innerHTML = `
+            <div class="modal-header">
+                <img src="${imgSrc}" alt="Book Cover">
+                <div>
+                    <h2>${title}</h2>
+                    <p><strong>Müəllif:</strong> ${author}</p>
+                    <p><strong>Janr:</strong> ${genre}</p>
                 </div>
-            `;
-        });
+            </div>
+            <hr>
+            <p><strong>Məlumat:</strong><br>${description}</p>
+            <button class="download-btn" onclick="alert('Yükləmə başladıldı...')">PDF YÜKLƏ</button>
+        `;
+
+        modal.style.display = "block";
     }
 
-    // Modal açmaq
-    function openModal(index) {
-        const b = books[index];
-        document.getElementById('m-title').innerText = b.title;
-        document.getElementById('m-author').innerText = b.author;
-        document.getElementById('m-genre').innerText = b.genre;
-        document.getElementById('m-lang').innerText = b.lang;
-        document.getElementById('m-desc').innerText = b.desc;
-        document.getElementById('m-link').href = b.link;
-        document.getElementById('bookModal').style.display = "flex";
-    }
-
+    // Modalı Bağlamaq Funksiyası
     function closeModal() {
         document.getElementById('bookModal').style.display = "none";
     }
 
-    // Yeni kitab əlavə etmək
-    function addNewBook() {
-        const newBook = {
-            title: document.getElementById('in-title').value,
-            author: document.getElementById('in-author').value,
-            genre: document.getElementById('in-genre').value,
-            lang: document.getElementById('in-lang').value,
-            img: document.getElementById('in-img').value || "https://via.placeholder.com/200x280",
-            link: document.getElementById('in-pdf').value,
-            desc: document.getElementById('in-desc').value
-        };
+    // Axtarış Funksiyası
+    function searchBooks() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('book-card');
 
-        if(newBook.title) {
-            books.push(newBook);
-            displayBooks();
-            alert("Kitab uğurla əlavə edildi!");
-        } else {
-            alert("Zəhmət olmasa kitab adını qeyd edin.");
+        for (let i = 0; i < cards.length; i++) {
+            let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+            if (title.includes(input)) {
+                cards[i].style.display = "block";
+            } else {
+                cards[i].style.display = "none";
+            }
         }
     }
 
-    // İlk işə salma
-    displayBooks();
-
-    // Pəncərə kənarına basanda modalı bağla
+    // Modalın kənarına basanda bağlanması
     window.onclick = function(event) {
-        if (event.target == document.getElementById('bookModal')) closeModal();
+        let modal = document.getElementById('bookModal');
+        if (event.target == modal) {
+            closeModal();
+        }
     }
 </script>
 
