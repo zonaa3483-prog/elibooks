@@ -3,256 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mir.az Stilində Kitab Portalı</title>
-    <style>
-        :root {
-            --primary-color: #4CAF50;
-            --bg-color: #f4f7f6;
-            --white: #ffffff;
-            --text-dark: #333;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            padding: 50px;
-        }
-
-        /* Kitab Kartı */
-        .book-card {
-            background: var(--white);
-            width: 200px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .book-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .premium-tag {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #ff4757;
-            color: white;
-            padding: 2px 8px;
-            font-size: 10px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .book-card img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-        }
-
-        .book-info {
-            padding: 15px;
-            text-align: center;
-        }
-
-        .book-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 5px 0;
-            color: var(--text-dark);
-        }
-
-        .book-author {
-            font-size: 13px;
-            color: #777;
-        }
-
-        /* Modal (Böyük Pəncərə) */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: none; /* İlkin olaraq gizli */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 20px;
-            display: flex;
-            overflow: hidden;
-            position: relative;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-left {
-            flex: 1;
-            background: #eee;
-        }
-
-        .modal-left img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modal-right {
-            flex: 1.5;
-            padding: 30px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .detail-table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        .detail-table td {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        .download-btn {
-            margin-top: 25px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .download-btn:hover {
-            background: #45a049;
-        }
-    </style>
+    <title>Mir.az Kloni - Kitab Yükləmə</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="book-card" onclick="openModal()">
-        <div class="premium-tag">Premium</div>
-        <img src="https://via.placeholder.com/200x280" alt="Kitab">
-        <div class="book-info">
-            <div class="book-author">Devney Perry</div>
-            <div class="book-title">Polad Kral</div>
-            <div style="color: var(--primary-color); font-size: 12px; margin-top: 5px;">Roman</div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            
-            <div class="modal-left">
-                <img src="https://via.placeholder.com/300x450" alt="Kitab Böyük">
+    <header class="navbar">
+        <div class="container">
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
             </div>
-
-            <div class="modal-right">
-                <h2 style="margin-top: 0;">Polad Kral</h2>
-                <p style="color: #666; font-size: 14px;">Müəllif: <b>Devney Perry</b></p>
-                
-                <table class="detail-table">
-                    <tr><td><b>Dil:</b></td><td>Azərbaycan</td></tr>
-                    <tr><td><b>Janr:</b></td><td>Roman</td></tr>
-                    <tr><td><b>Format:</b></td><td>PDF, EPUB</td></tr>
-                    <tr><td><b>Baxış:</b></td><td>1,240</td></tr>
-                </table>
-
-                <p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 20px;">
-                    Bu kitab ehtiras və güc mübarizəsindən bəhs edən unudulmaz bir sevgi hekayəsidir...
-                </p>
-
-                <button class="download-btn">İndi Yüklə (PDF)</button>
+            <div class="logo">
+                <img src="https://mir.az/uploads/settings/logo.png" alt="Logo"> 
+                <span>Mir.az</span>
+            </div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="book-card" onclick="openModal()">
-        <div class="premium-tag">Premium</div>
-        <img src="https://via.placeholder.com/200x280" alt="Kitab">
-        <div class="book-info">
-            <div class="book-author">Devney Perry</div>
-            <div class="book-title">Polad Kral</div>
-            <div style="color: var(--primary-color); font-size: 12px; margin-top: 5px;">Roman</div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            
-            <div class="modal-left">
-                <img src="https://via.placeholder.com/300x450" alt="Kitab Böyük">
+    <main class="container">
+        <h2 class="section-title">Son Yüklənənlər</h2>
+        
+        <div class="book-grid">
+            <div class="book-card">
+                <div class="badge">PREMİUM</div>
+                <div class="book-image">
+                    <img src="https://mir.az/uploads/books/1713876000_celik-kral.jpg" alt="Polad Kral">
+                </div>
+                <div class="book-info">
+                    <h3>Devney Perry "Polad Kral" PDF</h3>
+                    <p class="genre">Roman</p>
+                    <div class="stats">
+                        <span><i class="fas fa-star"></i> 0</span>
+                        <span><i class="fas fa-eye"></i> 133</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="modal-right">
-                <h2 style="margin-top: 0;">Polad Kral</h2>
-                <p style="color: #666; font-size: 14px;">Müəllif: <b>Devney Perry</b></p>
-                
-                <table class="detail-table">
-                    <tr><td><b>Dil:</b></td><td>Azərbaycan</td></tr>
-                    <tr><td><b>Janr:</b></td><td>Roman</td></tr>
-                    <tr><td><b>Format:</b></td><td>PDF, EPUB</td></tr>
-                    <tr><td><b>Baxış:</b></td><td>1,240</td></tr>
-                </table>
+            <div class="book-card">
+                <div class="badge">PREMİUM</div>
+                <div class="book-image">
+                    <img src="https://mir.az/uploads/books/the-gray-man.jpg" alt="The Gray Man">
+                </div>
+                <div class="book-info">
+                    <h3>Mark Greaney "The Gray Man" PDF</h3>
+                    <p class="genre">Roman</p>
+                    <div class="stats">
+                        <span><i class="fas fa-star"></i> 0</span>
+                        <span><i class="fas fa-eye"></i> 81</span>
+                    </div>
+                </div>
+            </div>
 
-                <p style="font-size: 13px; color: #555; line-height: 1.6; margin-top: 20px;">
-                    Bu kitab ehtiras və güc mübarizəsindən bəhs edən unudulmaz bir sevgi hekayəsidir...
-                </p>
-
-                <button class="download-btn">İndi Yüklə (PDF)</button>
+            <div class="book-card">
+                <div class="badge">PREMİUM</div>
+                <div class="book-image">
+                    <img src="https://mir.az/uploads/books/surlar-ve-olum.jpg" alt="Surlar və Ölüm">
+                </div>
+                <div class="book-info">
+                    <h3>Sabaa Tahir "Surlar ve Ölüm" PDF</h3>
+                    <p class="genre">Roman</p>
+                    <div class="stats">
+                        <span><i class="fas fa-star"></i> 1</span>
+                        <span><i class="fas fa-eye"></i> 442</span>
+                    </div>
+                </div>
             </div>
         </div>
+    </main>
+
+    <div class="floating-controls">
+        <div class="lang-box"><img src="https://flagcdn.com/w20/az.png" alt="AZ"> AZ</div>
+        <div class="dark-mode-btn"><i class="fas fa-moon"></i></div>
     </div>
-
-    <script>
-        const modal = document.getElementById('modal');
-
-        function openModal() {
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-
-        // Kənara vuranda bağlanması üçün
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-    </script>
 
 </body>
 </html>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+.container {
+    padding: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #fff;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.logo img {
+    height: 35px;
+}
+
+.menu-toggle, .user-profile {
+    font-size: 24px;
+    color: #4CAF50;
+    cursor: pointer;
+}
+
+/* Kitab Grid Sistemi */
+.section-title {
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: #444;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 15px;
+}
+
+/* Kitab Kartı */
+.book-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    transition: transform 0.2s;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.book-image img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+}
+
+.book-info {
+    padding: 12px;
+    text-align: center;
+}
+
+.book-info h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+    height: 40px;
+    overflow: hidden;
+}
+
+.genre {
+    color: #88d398;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    color: #888;
+    font-size: 12px;
+}
+
+.stats i {
+    color: #88d398;
+    margin-right: 4px;
+}
+
+/* Üzən Düymələr */
+.floating-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.lang-box, .dark-mode-btn {
+    pointer-events: auto;
+    background: #333;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.dark-mode-btn {
+    width: 45px;
+    height: 45px;
+    justify-content: center;
+    border-radius: 50%;
+}
