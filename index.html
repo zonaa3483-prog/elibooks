@@ -24,9 +24,8 @@
             padding-bottom: 80px;
         }
 
-        /* HEADER SİLİNDİ VƏ YA GİZLƏDİLDİ */
         header {
-            display: none; /* Yuxarıdakı böyük başlıq sahəsini tam gizlədir */
+            display: none; 
         }
 
         .book-grid {
@@ -34,7 +33,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             padding: 15px;
-            padding-top: 25px; /* Başlıq getdiyi üçün yuxarıdan bir az boşluq */
+            padding-top: 25px;
         }
 
         .book-card {
@@ -180,7 +179,7 @@
 
     <div id="home-page" class="page active-page">
         <div class="book-grid" id="mainGrid">
-            <div class="book-card" onclick="openDetails('Cinayət və Cəza', 'Fyodor Dostoyevski', 'Klassik Roman', 'Raskolnikov adlı gəncin mənəvi iztirabları...', 'https://m.media-amazon.com/images/I/71O2XIyigWL.jpg', '#', 'Azərbaycanca', '1866', '672')">
+            <div class="book-card" onclick="openDetails('Cinayət və Cəza', 'Fyodor Dostoyevski', 'Klassik Roman', 'Raskolnikov adlı gəncin mənəvi iztirabları...', 'https://m.media-amazon.com/images/I/71O2XIyigWL.jpg', 'https://ia800305.us.archive.org/15/items/CrimeAndPunishment_201602/Crime%20and%20Punishment.pdf', 'Azərbaycanca', '1866', '672')">
                 <div class="badge">S3</div>
                 <img src="https://m.media-amazon.com/images/I/71O2XIyigWL.jpg" alt="Kitab">
                 <div class="book-info">
@@ -189,7 +188,7 @@
                 </div>
             </div>
 
-            <div class="book-card" onclick="openDetails('Səfillər', 'Viktor Hüqo', 'Dram', 'Jan Valjanın xeyirxahlığa doğru dəyişən həyatı...', 'https://m.media-amazon.com/images/I/81af+S-re7L.jpg', '#', 'Azərbaycanca', '1862', '1200')">
+            <div class="book-card" onclick="openDetails('Səfillər', 'Viktor Hüqo', 'Dram', 'Jan Valjanın xeyirxahlığa doğru dəyişən həyatı...', 'https://m.media-amazon.com/images/I/81af+S-re7L.jpg', 'https://ia800201.us.archive.org/3/items/lesmisrables00hugogoog/lesmisrables00hugogoog.pdf', 'Azərbaycanca', '1862', '1200')">
                 <div class="badge">S5</div>
                 <img src="https://m.media-amazon.com/images/I/81af+S-re7L.jpg" alt="Kitab">
                 <div class="book-info">
@@ -198,7 +197,7 @@
                 </div>
             </div>
 
-            <div class="book-card" onclick="openDetails('Qəlb Yarası', 'Əli Məhərrəmov', 'Sevgi, Dram', 'Qəlb Yarası Əli Məhərrəmov tərəfindən yazılmış şeirlər kitabıdır. Kitabda nakam sevgi, puç olan məhəbbət, ailə və yaradan mövzusunda yazılmış gözəl şeirlər yer alır. Kitabda əsas mövzu məhəbbət üzərində qurulmuşdur. Bu kitabda ümumilikdə 200 şeir yer alır. Kitab 2018-ci ildə Əli Məhərrəmov tərəfindən yazılmışdır. Kitab 2023-cü ildə nəşr olunmuşdur. Xoş oxumalar.', 'https://ia902900.us.archive.org/22/items/elimeherremovofc-highlight-18279034543106991-webp-0_202604/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', '#', 'Azərbaycan', '2018', '340')">
+            <div class="book-card" onclick="openDetails('Qəlb Yarası', 'Əli Məhərrəmov', 'Sevgi, Dram', 'Qəlb Yarası Əli Məhərrəmov tərəfindən yazılmış şeirlər kitabıdır. Kitabda nakam sevgi, puç olan məhəbbət, ailə və yaradan mövzusunda yazılmış gözəl şeirlər yer alır. Kitabda əsas mövzu məhəbbət üzərində qurulmuşdur. Bu kitabda ümumilikdə 200 şeir yer alır. Kitab 2018-ci ildə Əli Məhərrəmov tərəfindən yazılmışdır. Kitab 2023-cü ildə nəşr olunmuşdur. Xoş oxumalar.', 'https://ia902900.us.archive.org/22/items/elimeherremovofc-highlight-18279034543106991-webp-0_202604/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', 'https://archive.org/download/elimeherremovofc-highlight-18279034543106991-webp-0_202604/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg', 'Azərbaycan', '2018', '340')">
                 <div class="badge">Premium</div>
                 <img src="https://ia902900.us.archive.org/22/items/elimeherremovofc-highlight-18279034543106991-webp-0_202604/elimeherremovofc%20-%20highlight_18279034543106991%28WEBP%29_0.jpg" alt="Kitab">
                 <div class="book-info">
@@ -217,12 +216,10 @@
     </div>
 
     <div id="profile-page" class="page">
-        <div class="profile-header" id="authorData">
-            </div>
+        <div class="profile-header" id="authorData"></div>
         <hr>
         <h3>Məşhur Kitabları</h3>
-        <ul class="author-books-list" id="authorBooks">
-            </ul>
+        <ul class="author-books-list" id="authorBooks"></ul>
     </div>
 
     <div id="bookModal" class="modal">
@@ -302,7 +299,6 @@
         function showPage(pageId, title, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
-            // BAŞLIQ MƏTNİNİN HEADERƏ YAZILMASI SİLİNDİ
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(element) element.classList.add('active');
         }
@@ -320,7 +316,6 @@
                     cards[i].style.display = "none";
                 }
             }
-            document.getElementById('home-page').classList.add('active-page');
             document.getElementById('noResult').style.display = foundAny ? "none" : "block";
         }
 
