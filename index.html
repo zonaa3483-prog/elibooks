@@ -90,7 +90,7 @@
             text-overflow: ellipsis;
         }
 
-        /* FULL SCREEN MODAL (Əsas Dəyişiklik Burada) */
+        /* FULL SCREEN MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -99,7 +99,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: #fdf5e6; /* Kitab səhifəsi rəngi */
+            background-color: #fdf5e6;
             overflow-y: auto;
             animation: slideUp 0.3s ease-out;
         }
@@ -154,7 +154,7 @@
             font-size: 16px;
             border-top: 1px solid #eee;
             padding-top: 15px;
-            margin-bottom: 100px; /* Düymə üçün boşluq */
+            margin-bottom: 100px;
         }
 
         .download-btn-fixed {
@@ -240,6 +240,22 @@
         }
 
         hr { border: 0; border-top: 1px solid #ddd; margin: 15px 0; }
+
+        /* Axtarış Input Stili */
+        .search-container {
+            padding: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--header-bg);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -249,8 +265,8 @@
     </header>
 
     <div id="home-page" class="page active-page">
-        <div class="book-grid">
-            <div class="book-card" onclick="openDetails('Cinayət və Cəza', 'Fyodor Dostoyevski', 'Klassik Roman', 'Raskolnikov adlı gəncin mənəvi iztirabları və törətdiyi cinayətin fəlsəfi təhlili. Bu əsər insanın daxili aləmindəki çəkişmələri və vicdanın səsinə qulaq asmağın çətinliyini möhtəşəm şəkildə təsvir edir.', 'https://images.unsplash.com/photo-1543004629-142a76f50c8e?w=600', 'fayl1.pdf')">
+        <div class="book-grid" id="mainGrid">
+            <div class="book-card" onclick="openDetails('Cinayət və Cəza', 'Fyodor Dostoyevski', 'Klassik Roman', 'Raskolnikov adlı gəncin mənəvi iztirabları və törətdiyi cinayətin fəlsəfi təhlili.', 'https://images.unsplash.com/photo-1543004629-142a76f50c8e?w=600', 'fayl1.pdf')">
                 <div class="badge">S3</div>
                 <img src="https://images.unsplash.com/photo-1543004629-142a76f50c8e?w=200" alt="Kitab">
                 <div class="book-info">
@@ -259,7 +275,7 @@
                 </div>
             </div>
 
-            <div class="book-card" onclick="openDetails('Səfillər', 'Viktor Hüqo', 'Dram', 'Jan Valjanın xeyirxahlığa doğru dəyişən həyatı və 19-cu əsr Fransa cəmiyyətindəki ədalətsizliklərdən bəhs edən şah əsərdir.', 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600', 'fayl2.pdf')">
+            <div class="book-card" onclick="openDetails('Səfillər', 'Viktor Hüqo', 'Dram', 'Jan Valjanın xeyirxahlığa doğru dəyişən həyatı və 19-cu əsr Fransa cəmiyyətindəki ədalətsizliklər.', 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600', 'fayl2.pdf')">
                 <div class="badge">S5</div>
                 <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200" alt="Kitab">
                 <div class="book-info">
@@ -268,7 +284,7 @@
                 </div>
             </div>
 
-            <div class="book-card" onclick="openDetails('1984', 'George Orwell', 'Distopiya', 'Böyük Qardaşın hamını izlədiyi totalitar bir sistem haqqında dahiyanə əsər. İradə azadlığı və düşüncə cinayəti haqqında düşündürən bir roman.', 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600', 'fayl3.pdf')">
+            <div class="book-card" onclick="openDetails('1984', 'George Orwell', 'Distopiya', 'Böyük Qardaşın hamını izlədiyi totalitar bir sistem haqqında dahiyanə əsər.', 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600', 'fayl3.pdf')">
                 <div class="badge">S1</div>
                 <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=200" alt="Kitab">
                 <div class="book-info">
@@ -280,9 +296,9 @@
     </div>
 
     <div id="search-page" class="page">
-        <div style="padding: 20px;">
-            <input type="text" placeholder="Kitab və ya janr axtar..." style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc;">
-            <p style="text-align: center; margin-top: 20px; color: #888;">Tezliklə: Axtarış funksiyası aktivləşəcək.</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Kitab adı yazın..." onkeyup="searchFunction()">
+            <p id="noResult" style="display:none; text-align:center; margin-top:20px; color:#666;">Kitab tapılmadı.</p>
         </div>
     </div>
 
@@ -347,14 +363,47 @@
     </nav>
 
     <script>
+        // Səhifə keçidləri
         function showPage(pageId, title, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
             document.getElementById('header-title').innerText = title;
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             element.classList.add('active');
+
+            // Axtarışdan çıxanda bütün kitabları yenidən göstər
+            if(pageId === 'home-page') {
+                let cards = document.getElementsByClassName('book-card');
+                for(let i=0; i<cards.length; i++) cards[i].style.display = "";
+            }
         }
 
+        // Axtarış Funksiyası (Canlı)
+        function searchFunction() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('book-card');
+            let foundAny = false;
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                
+                if (title.includes(input)) {
+                    cards[i].style.display = "";
+                    foundAny = true;
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            // Axtarış nəticələrini görmək üçün Home Page-i aktiv tuturuq
+            document.getElementById('home-page').classList.add('active-page');
+            document.getElementById('noResult').style.display = foundAny ? "none" : "block";
+            
+            // Əgər input boşdursa, "Axtarış" başlığını qaytar, yoxsa "Nəticələr" et
+            document.getElementById('header-title').innerText = input === "" ? "Kitablar" : "Axtarış Nəticələri";
+        }
+
+        // Modal idarəetməsi
         function openDetails(title, author, genre, desc, imgSrc, pdf) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-author').innerText = author;
@@ -364,7 +413,6 @@
             document.getElementById('modal-download').href = pdf;
             
             document.getElementById('bookModal').style.display = "block";
-            // Modal açılarkən ana səhifənin sürüşməsini bağla
             document.body.style.overflow = "hidden";
         }
 
